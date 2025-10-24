@@ -1,0 +1,22 @@
+{
+  "name": "lan-bic-server",
+  "version": "1.0.0",
+  "description": "Backend for LAN bic - Business Intelligence Connection",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "author": "Jules for GRUPO LAZO ARCE S.A. de C.V.",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
