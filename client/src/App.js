@@ -6,6 +6,7 @@ import DashboardScreen from './components/DashboardScreen';
 import MainLayout from './components/MainLayout';
 import UserManagement from './components/users/UserManagement';
 import ContractManagement from './components/contracts/ContractManagement';
+import RoleManagement from './components/roles/RoleManagement';
 import RoleManagement from './components/roles/RoleManagement'; // Importar el nuevo componente
 
 // Este componente servirá para proteger rutas en el futuro
@@ -24,6 +25,7 @@ function App() {
         <Route path="/dashboard" element={<PrivateRoute><MainLayout><DashboardScreen /></MainLayout></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute><MainLayout><UserManagement /></MainLayout></PrivateRoute>} />
         <Route path="/contracts" element={<PrivateRoute><MainLayout><ContractManagement /></MainLayout></PrivateRoute>} />
+        <Route path="/roles" element={<PrivateRoute><MainLayout><RoleManagement /></MainLayout></PrivateRoute>} />
 
         {/* Ruta para la gestión de roles */}
         <Route path="/roles" element={<PrivateRoute><MainLayout><RoleManagement /></MainLayout></PrivateRoute>} />
