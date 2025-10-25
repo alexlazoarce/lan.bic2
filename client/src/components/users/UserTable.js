@@ -58,7 +58,7 @@ const UserTable = ({ users, onEdit, onDelete }) => {
             <tr key={user._id}>
               <Td>{user.name}</Td>
               <Td>{user.email}</Td>
-              <Td>{user.role}</Td>
+              <Td>{user.role ? user.role.name : 'No Role Assigned'}</Td>
               <Td>
                 <ActionButton actionType="edit" onClick={() => onEdit(user)}>
                   Edit

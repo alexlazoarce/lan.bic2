@@ -46,6 +46,10 @@ const MainLayout = ({ children }) => {
             <li>
               <Link to="/users">User Management</Link>
             </li>
+            {/* Enlace a Gestión de Roles */}
+            <li>
+              <Link to="/roles">Role Management</Link>
+            </li>
             {/* Enlace a Gestión de Contratos */}
             <li>
               <Link to="/contracts">Contract Management</Link>

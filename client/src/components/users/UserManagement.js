@@ -1,21 +1,22 @@
+// client/src/components/users/UserManagement.js
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import UserTable from './UserTable';
 import UserModal from './UserModal';
 
-const Container = styled.div`
+const Container = styled.div\`
   padding: 2rem;
   color: #c5c6c7;
-`;
+\`;
 
-const Title = styled.h1`
+const Title = styled.h1\`
   color: #66fcf1;
   font-size: 2rem;
   margin-bottom: 2rem;
-`;
+\`;
 
-const Button = styled.button`
+const Button = styled.button\`
   background-color: #45a29e;
   color: #0b0c10;
   border: none;
@@ -30,38 +31,49 @@ const Button = styled.button`
   &:hover {
     background-color: #66fcf1;
   }
-`;
+\`;
 
-const ErrorMessage = styled.p`
+const ErrorMessage = styled.p\`
   color: #ff6b6b;
-`;
+\`;
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]); // Nuevo estado para los roles
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [error, setError] = useState('');
 
-  const fetchUsers = useCallback(async () => {
-    const apiConfig = {
-      headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
-    };
+  const getApiConfig = () => ({
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: \`Bearer \${localStorage.getItem('authToken')}\`,
+    },
+  });
+
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
-      const { data } = await axios.get('/api/v1/users', apiConfig);
-      setUsers(data.data);
+      // Hacemos ambas llamadas a la API en paralelo
+      const [usersRes, rolesRes] = await Promise.all([
+        axios.get('/api/v1/users', getApiConfig()),
+        axios.get('/api/v1/roles', getApiConfig()),
+      ]);
+      setUsers(usersRes.data.data);
+      setRoles(rolesRes.data.data);
     } catch (err) {
-      setError('Failed to fetch users.');
+      setError('Failed to fetch data.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    fetchData();
+  }, [fetchData]);
 
   const handleOpenModal = (user = null) => {
     setEditingUser(user);
@@ -74,17 +86,14 @@ const UserManagement = () => {
   };
 
   const handleSubmit = async (formData) => {
-    const apiConfig = {
-      headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
-    };
     try {
       setError('');
       if (editingUser) {
-        await axios.put(`/api/v1/users/${editingUser._id}`, formData, apiConfig);
+        await axios.put(\`/api/v1/users/\${editingUser._id}\`, formData, getApiConfig());
       } else {
-        await axios.post('/api/v1/users', formData, apiConfig);
+        await axios.post('/api/v1/users', formData, getApiConfig());
       }
-      fetchUsers();
+      fetchData(); // Recargar tanto usuarios como roles
       handleCloseModal();
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred.');
@@ -92,14 +101,11 @@ const UserManagement = () => {
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure?')) {
-      const apiConfig = {
-        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
-      };
+    if (window.confirm('Are you sure you want to delete this user?')) {
       try {
         setError('');
-        await axios.delete(`/api/v1/users/${userId}`, apiConfig);
-        fetchUsers();
+        await axios.delete(\`/api/v1/users/\${userId}\`, getApiConfig());
+        fetchData();
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to delete user.');
       }
@@ -110,17 +116,21 @@ const UserManagement = () => {
     <Container>
       <Title>User Management</Title>
       <Button onClick={() => handleOpenModal()}>Add New User</Button>
+
       {error && <ErrorMessage>{error}</ErrorMessage>}
+
       {loading ? (
-        <p>Loading users...</p>
+        <p>Loading data...</p>
       ) : (
         <UserTable users={users} onEdit={handleOpenModal} onDelete={handleDelete} />
       )}
+
       <UserModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleSubmit}
         user={editingUser}
+        roles={roles} // Pasar la lista de roles al modal
       />
     </Container>
   );
