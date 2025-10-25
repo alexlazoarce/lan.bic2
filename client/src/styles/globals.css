@@ -1,0 +1,18 @@
+/* PALETA OFICIAL */
+:root {
+  --primary-dark: #05161A;
+  --secondary-dark: #072E33;
+  --accent-medium: #0C7075;
+  --accent-light: #0F969C;
+  --sky-blue: #6DA5C0;
+  --gray-neutral: #294D61;
+}
+
+/* ESTILO GENERAL */
+body {
+  background-color: var(--primary-dark);
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
